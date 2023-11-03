@@ -8,16 +8,23 @@
   let map;
 
   function initMap() {
-    //alert("initMap");
+    alert("initMap");
     // The location
     const theLocation = { lat: 38.89320, lng: -104.80253 };
-    // The map, centered at Uluru
     
+    // The map, centered at UCCS
     map = new google.maps.Map(document.getElementById("map"), {
       zoom: 16,
       center: theLocation,
     });
-    //alert("initMap done");
+
+    // The marker, positioned at UCCS
+    var marker = new google.maps.Marker({
+      map: map,
+      position: theLocation,
+      title: 'Scooter1'
+    });
+    alert("initMap done");
   }
 
   window.initMap = initMap
