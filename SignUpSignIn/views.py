@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .sign_up_form import SignUpForm
+from .forms import SignUpForm
 from django.contrib import messages
 
 def signuppage(request):
@@ -13,7 +13,7 @@ def signuppage(request):
       messages.error(request, 'Sign up was unsuccessfull! Please try again.')
 
 
-    return redirect("signup")
+    return redirect("/signup")
   signup_form = SignUpForm()
   users = User.objects.all()
   return render(request=request, template_name="signup.html", context={'signup_form':signup_form, 'users':users})
