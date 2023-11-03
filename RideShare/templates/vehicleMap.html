@@ -8,7 +8,7 @@
   let map;
 
   function initMap() {
-    alert("initMap");
+    //alert("initMap");
     // The location
     const theLocation = { lat: 38.89320, lng: -104.80253 };
     
@@ -18,13 +18,20 @@
       center: theLocation,
     });
 
-    // The marker, positioned at UCCS
+    // The marker, positioned at UCCS West Lawn
     var marker = new google.maps.Marker({
       map: map,
       position: theLocation,
       title: 'Scooter1'
     });
-    alert("initMap done");
+
+    // The marker, positioned near UCCS The Lodge
+    marker = new google.maps.Marker({
+      map: map,
+      position: { lat: 38.89459, lng: -104.80431 },
+      title: 'Scooter2'
+    });
+    //alert("initMap done");
   }
 
   window.initMap = initMap
