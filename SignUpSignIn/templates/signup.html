@@ -6,9 +6,10 @@
   <h2 class="my-4">Sign Up</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-        {{signup_form}}
-        <button class="btn btn-primary my-4" type="submit">Submit</button>
+    {{form.as_p}}
+    <button class="btn btn-primary my-4" type="submit">Submit</button>
   </form>
+
   <!--Django Model-->
   <h2 class="my-4">Current Users</h2>
   <div class="row">
