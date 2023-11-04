@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 
 def signuppage(request):
 
@@ -46,3 +45,7 @@ def signinpage(request):
     else:
         form = AuthenticationForm()
         return render(request, 'signin.html', {'form':form})
+
+def logoutpage(request):
+  logout(request)
+  return redirect('/signin')
