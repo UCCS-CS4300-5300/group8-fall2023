@@ -3,5 +3,10 @@
 
 {% block content %}
 <h1>UCCS Ride Share</h1>
-<img src="{% static 'images/RideShareHome.jpg' %}" alt="UCCS Ride Share Home"/>
+<div>
+  <p><a href = "{% url 'logoutpage' %}">Logout</a></p>
+</div>
+<div>
+  <img src="{% static 'images/RideShareHome.jpg' %}" alt="UCCS Ride Share Home"/>
+</div>
 {% endblock %}
