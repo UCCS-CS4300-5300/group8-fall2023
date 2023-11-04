@@ -1,19 +1,28 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
-from .forms import SignUpForm
-from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 
 def signuppage(request):
-  if request.method == "POST":
-    signup_form = SignUpForm(request.POST, request)
-    if signup_form.is_valid():
-      signup_form.save()
-      messages.success(request, ('Sign up succeeded!'))
-    else:
-      messages.error(request, 'Sign up was unsuccessfull! Please try again.')
 
+      if request.user.is_authenticated:
+          return redirect('/')
 
-    return redirect("/signup")
-  signup_form = SignUpForm()
-  users = User.objects.all()
-  return render(request=request, template_name="signup.html", context={'signup_form':signup_form, 'users':users})
+      if request.method == 'POST':
+          form = UserCreationForm(request.POST)
+
+          if form.is_valid():
+              form.save()
+              username = form.cleaned_data['username']
+              password = form.cleaned_data['password1']
+              user = authenticate(username = username,password = password)
+              login(request, user)
+              return redirect('/')
+
+          else:
+              return render(request,'signup.html',{'form':form})
+
+      else:
+          form = UserCreationForm()
+          users = User.objects.all()
+          return render(request,'signup.html',{'form':form, 'users':users})
