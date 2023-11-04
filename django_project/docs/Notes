@@ -2,15 +2,60 @@ Google Maps
 Tutorial: https://www.youtube.com/watch?v=5DBFS1FHkRg
 API Key: [Private]
 
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
-</script>
 
-<script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-({key: {{key}}, v: "weekly"});</script>
 
-<script type="module" src="{% static 'index.js' %}"></script>
+[4:30 PM] Kristen Walcott
+ISBN Dysfunction Book 9780815722069
 
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-oTBt9sdMhCXyQqrtuok0CYvP7ev58hg&callback=initMap">
-</script>
+group8admin
+
+Adding data to database
+
+python manage.py shell
+
+from RideShare.models import Vehicle
+Vehicle(type='Scooter', latitude=38.89320, longitude=-104.80253, isAvailable=True).save()
+Vehicle(type='Scooter', latitude=38.89459, longitude=-104.80431, isAvailable=True).save()
+Vehicle(type='Scooter', latitude=38.889914, longitude=-104.787584, isAvailable=True).save()
+Vehicle(type='Scooter', latitude=38.895425, longitude=-104.806325, isAvailable=True).save()
+
+// The marker, positioned at UCCS West Lawn
+var marker = new google.maps.Marker({
+  map: map,
+  position: theLocation,
+  title: 'Scooter1'
+});
+
+// The marker, positioned near UCCS The Lodge
+marker = new google.maps.Marker({
+  map: map,
+  position: { lat: 38.89459, lng: -104.80431 },
+  title: 'Scooter2'
+});
+
+// The marker, positioned near UHaul
+marker = new google.maps.Marker({
+  map: map,
+  position: { lat: 38.889914, lng: -104.787584 },
+  title: 'Scooter3'
+});
+
+// The marker, positioned near Campus Recreation
+marker = new google.maps.Marker({
+  map: map,
+  position: { lat: 38.895425, lng: -104.806325 },
+  title: 'Scooter4'
+});
+
+for(var i = 0; i < results.length; i++)
+{
+  result = results[i];
+
+  markerLocation = { result.latitude, result.longitude};
+
+  var marker = new google.maps.Marker({
+    map: map,
+    position: markerLocation,
+    title: result
+  });
+}

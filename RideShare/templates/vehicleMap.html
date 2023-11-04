@@ -9,42 +9,37 @@
 
   function initMap() {
     //alert("initMap");
-    // The location
+    // The location UCCS West Lawn
     const theLocation = { lat: 38.89320, lng: -104.80253 };
     
     // The map, centered at UCCS
     map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 16,
+      zoom: 14,
       center: theLocation,
     });
 
-    // The marker, positioned at UCCS West Lawn
-    var marker = new google.maps.Marker({
-      map: map,
-      position: theLocation,
-      title: 'Scooter1'
-    });
+    var json_data = "{{ response_data }}";
+    json_data = json_data.replaceAll("&#x27;", '"');
+    //alert("raw data = " + json_data);
+    json_parse = JSON.parse(json_data);
+    //alert(json_parse);
+    results = json_parse['results'];
+    //alert(results);
 
-    // The marker, positioned near UCCS The Lodge
-    marker = new google.maps.Marker({
-      map: map,
-      position: { lat: 38.89459, lng: -104.80431 },
-      title: 'Scooter2'
-    });
+    for(var i = 0; i < results.length; i++)
+    {
+      result = results[i];
 
-    // The marker, positioned near UHaul
-    marker = new google.maps.Marker({
-      map: map,
-      position: { lat: 38.889914, lng: -104.787584 },
-      title: 'Scooter3'
-    });
-
-    // The marker, positioned near Campus Recreation
-    marker = new google.maps.Marker({
-      map: map,
-      position: { lat: 38.895425, lng: -104.806325 },
-      title: 'Scooter4'
-    });
+      if(result.isAvailable == "True")
+      {
+        marker = new google.maps.Marker({
+          map: map,
+          position: { lat: result.latitude, lng: result.longitude },
+          title: result
+        });
+      }
+    }
+    
     //alert("initMap done");
   }
 
