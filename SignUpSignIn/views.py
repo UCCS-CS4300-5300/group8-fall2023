@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 
 def signuppage(request):
 
@@ -24,5 +25,24 @@ def signuppage(request):
 
       else:
           form = UserCreationForm()
-          users = User.objects.all()
-          return render(request,'signup.html',{'form':form, 'users':users})
+          return render(request,'signup.html',{'form':form})
+
+def signinpage(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username =username, password = password)
+
+        if user is not None:
+            login(request,user)
+            return redirect('/')
+        else:
+            form = AuthenticationForm()
+            return render(request,'signin.html',{'form':form})
+
+    else:
+        form = AuthenticationForm()
+        return render(request, 'signin.html', {'form':form})
