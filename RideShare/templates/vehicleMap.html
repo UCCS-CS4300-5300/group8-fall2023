@@ -35,7 +35,7 @@
         marker = new google.maps.Marker({
           map: map,
           position: { lat: result.latitude, lng: result.longitude },
-          title: result
+          title: result.type + result.id
         });
       }
     }
