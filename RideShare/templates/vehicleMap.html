@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>UCCS Ride Share Vehicle Map</h1>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<script>
+  let map;
+
+  function initMap() {
+    //alert("initMap");
+    // The location UCCS West Lawn
+    const theLocation = { lat: 38.89320, lng: -104.80253 };
+    
+    // The map, centered at UCCS
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 14,
+      center: theLocation,
+    });
+
+    var json_data = "{{ response_data }}";
+    json_data = json_data.replaceAll("&#x27;", '"');
+    //alert("raw data = " + json_data);
+    json_parse = JSON.parse(json_data);
+    //alert(json_parse);
+    results = json_parse['results'];
+    //alert(results);
+
+    for(var i = 0; i < results.length; i++)
+    {
+      result = results[i];
+
+      if(result.isAvailable == "True")
+      {
+        marker = new google.maps.Marker({
+          map: map,
+          position: { lat: result.latitude, lng: result.longitude },
+          title: result
+        });
+      }
+    }
+    
+    //alert("initMap done");
+  }
+
+  window.initMap = initMap
+</script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'vehicleMap.css' %}" />
+
+<div id="map"></div>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
+</script>
+
+{% endblock %}
