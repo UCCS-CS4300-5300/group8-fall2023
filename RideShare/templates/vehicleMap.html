@@ -37,11 +37,13 @@
           position: { lat: result.latitude, lng: result.longitude },
           title: result.type + result.id
         });
+
       }
     }
     
     //alert("initMap done");
   }
+
 
   window.initMap = initMap
 </script>
@@ -49,6 +51,20 @@
 <link rel="stylesheet" type="text/css" href="{% static 'vehicleMap.css' %}" />
 
 <div id="map"></div>
+
+<!-- Check-in Form -->
+<form method="post" action="{% url 'check_in' %}">
+  {% csrf_token %}
+  <input type="hidden" name="vehicle_id" id="vehicle_id" value="">
+  <label for="checkin_location">Check-in Location:</label>
+  <select name="checkin_location" id="checkin_location">
+    {% for location, label in form.fields.checkin_location.choices %}
+      <option value="{{ location }}">{{ label }}</option>
+    {% endfor %}
+    </select>
+  <button type="submit">Check In</button>
+</form>
+
 <script async
     src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
 </script>

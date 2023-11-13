@@ -1,0 +1,7 @@
+from django import forms
+from RideShare.modelsFolder.VehicleModel import Vehicle, VehicleRental
+
+class CheckInForm(forms.Form):
+  vehicle_id = forms.IntegerField(widget=forms.HiddenInput())
+  checkin_location = forms.ChoiceField(choices=VehicleRental.locations, label='Check-in Location')
+  
