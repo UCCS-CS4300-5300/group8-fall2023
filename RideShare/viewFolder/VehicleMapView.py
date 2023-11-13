@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from RideShare.modelsFolder.VehicleModel import Vehicle
+#from RideShare.serializers import VehicleSerializer
 
 class VehicleMapView(View):
   template_name = 'vehicleMap.html'
