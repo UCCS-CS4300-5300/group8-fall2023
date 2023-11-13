@@ -53,7 +53,7 @@ class VehicleMapView(View):
       checkin_location = form.cleaned_data['checkin_location']
       
       vehicle = Vehicle.objects.get(pk=vehicle_id)
-      rental = VehicleRental.objects.filter(user=request.user, vehicle=vehicle, checkin_time__isnull=True).first()
+      rental = VehicleRental.objects.filter(user=request.user, vehicle=vehicle, checkinTime__isnull=True).first()
 
       if rental: 
         rental.checkin_location = checkin_location
@@ -68,10 +68,10 @@ class VehicleMapView(View):
         return redirect('vehicle_map')
 
       # handle invalid form data
-      context = {
-        'form': form,
-        'key': 'AIzaSyD-oTBt9sdMhCXyQqrtuok0CYvP7ev58hg',
-        'vehicles': Vehicle.objects.all(),
-        'rentals': VehicleRental.objects.filter(user=request.user, checkin_time__isnull=True),
+    context = {
+      'form': form,
+      'key': 'AIzaSyD-oTBt9sdMhCXyQqrtuok0CYvP7ev58hg',
+      'vehicles': Vehicle.objects.all(),
+      'rentals': VehicleRental.objects.filter(user=request.user, checkinTime__isnull=True),
       }
-      return render(request, self.template_name, context)
+    return render(request, self.template_name, context)
