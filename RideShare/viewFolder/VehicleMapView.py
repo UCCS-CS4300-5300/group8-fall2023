@@ -76,7 +76,7 @@ class CheckInView(View):
       print("Rental not found or form data invalid")
       print("Form errors: ", form.errors)
 
-      # handle invalid form data
+      # handle invalid form dat
     context = {
       'form': form,
       'key': 'AIzaSyD-oTBt9sdMhCXyQqrtuok0CYvP7ev58hg',
