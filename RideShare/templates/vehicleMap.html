@@ -35,7 +35,7 @@
         marker = new google.maps.Marker({
           map: map,
           position: { lat: result.latitude, lng: result.longitude },
-          title: result
+          title: result.type + result.id
         });
       }
     }
@@ -52,5 +52,9 @@
 <script async
     src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
 </script>
+<div>
+  <p><a href="{% url 'home' %}">Home</a></p>
+</div>
+
 
 {% endblock %}
