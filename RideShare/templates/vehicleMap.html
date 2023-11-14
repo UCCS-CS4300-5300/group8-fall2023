@@ -41,7 +41,6 @@
 
         //creating an info window to specify which vehicle is which marker
         var contentString = result.type + result.id
-        
         infowindow = new google.maps.InfoWindow({
           content: contentString,
         });
@@ -49,6 +48,7 @@
         //infoWindow key
         marker.infowindow = infowindow;
 
+        //adding click event to marker
         marker.addListener('click', function() {
           return this.infowindow.open(map, this);
         });
@@ -68,6 +68,10 @@
 <script async
     src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
 </script>
+
+for 
+
+
 <div>
   <p><a href="{% url 'home' %}">Home</a></p>
 </div>

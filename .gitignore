@@ -158,3 +158,18 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+#replit messed up stuff
+RideShare/__pycache__/__init__.cpython-38.pyc
+RideShare/__pycache__/admin.cpython-38.pyc
+RideShare/__pycache__/apps.cpython-38.pyc
+RideShare/__pycache__/models.cpython-38.pyc
+RideShare/__pycache__/urls.cpython-38.pyc
+RideShare/__pycache__/views.cpython-38.pyc
+RideShare/migrations/__pycache__/0001_initial.cpython-38.pyc
+RideShare/migrations/__pycache__/__init__.cpython-38.pyc
+db.sqlite3
+django_project/__pycache__/__init__.cpython-38.pyc
+django_project/__pycache__/settings.cpython-38.pyc
+django_project/__pycache__/urls.cpython-38.pyc
+django_project/__pycache__/wsgi.cpython-38.pyc
