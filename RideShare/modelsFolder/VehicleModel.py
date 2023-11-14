@@ -15,7 +15,7 @@ class Vehicle(models.Model):
   def __str__(self):
     return self.type + str(self.id)
 
-
+# random comment test
 class VehicleRental(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
