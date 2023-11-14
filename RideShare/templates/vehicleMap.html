@@ -31,12 +31,28 @@
       result = results[i];
 
       if(result.isAvailable == "True")
-      {
+      {   
+        
         marker = new google.maps.Marker({
           map: map,
           position: { lat: result.latitude, lng: result.longitude },
           title: result.type + result.id
         });
+
+        //creating an info window to specify which vehicle is which marker
+        var contentString = result.type + result.id
+        
+        infowindow = new google.maps.InfoWindow({
+          content: contentString,
+        });
+
+        //infoWindow key
+        marker.infowindow = infowindow;
+
+        marker.addListener('click', function() {
+          return this.infowindow.open(map, this);
+        });
+        
       }
     }
     
