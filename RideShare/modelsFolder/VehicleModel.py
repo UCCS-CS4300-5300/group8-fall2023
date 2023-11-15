@@ -15,7 +15,7 @@ class Vehicle(models.Model):
 
   def __str__(self):
 
-    return self.type + str(self.id)
+    return f"{self.type} (ID: {self.id})"
 
 
 class VehicleRental(models.Model):
