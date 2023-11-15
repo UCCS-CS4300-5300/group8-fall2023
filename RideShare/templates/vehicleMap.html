@@ -69,7 +69,18 @@
     src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
 </script>
 
-for 
+<div class="container">
+{% for vehicle in vehicles %}
+  {% if vehicle.isAvailable %}
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="{{ vehicle.id }}">
+      <label class="form-check-label" for="{{ vehicle.id }}">
+       <p class ="text"> {{vehicle.type }} {{ vehicle.id }} </p>
+      </label>
+    </div>
+  {% endif %}
+{% endfor %}
+</div>
 
 
 <div>
