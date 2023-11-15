@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
+<div id="signupform" class="container">
   <!--Django Model Form-->
-  <h2 class="my-4">Sign Up</h2>
-  <form method="post" enctype="multipart/form-data">
+  <h2>Sign Up</h2>
+  <form method="post" class="container text-center" enctype="multipart/form-data">
     {% csrf_token %}
     {{form.as_p}}
     <button class="btn btn-primary my-4" type="submit">Submit</button>

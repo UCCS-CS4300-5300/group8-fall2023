@@ -1,4 +1,16 @@
 @charset "UTF-8";
+
+/* Group 8 Customizations */
+#signupform form p span { 
+  display: none;
+}
+
+#signupform form ul {
+  list-style-type: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margins */
+}
+
 /*!
 * Start Bootstrap - Bare v5.0.9 (https://startbootstrap.com/template/bare)
 * Copyright 2013-2023 Start Bootstrap
