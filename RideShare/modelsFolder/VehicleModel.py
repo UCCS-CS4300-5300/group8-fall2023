@@ -24,10 +24,10 @@ class VehicleRental(models.Model):
   checkoutTime = models.DateTimeField(auto_now_add=True)
   checkinTime = models.DateTimeField(null=True, blank=True)
   locations = [
-    ('Location1', 'Location 1'),
-    ('Location2', 'Location 2'),
-    ('Location3', 'Location 3'),
-    ('Location4', 'Location 4'),
+    ('Location1', 'West Lawn'),
+    ('Location2', 'Campus Rec Center'),
+    ('Location3', 'The Lodge'),
+    ('Location4', 'University Hall'),
     ('Location5', 'Location 5'),
   ]
   checkinLocal = models.CharField(max_length=200, 
