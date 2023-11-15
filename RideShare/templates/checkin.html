@@ -1,33 +1,30 @@
+<!-- checkin.html -->
+
 {% extends "base.html" %}
 {% load static %}
 
 {% block content %}
-<h1>UCCS Ride Share Vehicle Map</h1>
+{% if rental %}
+<h1>Check-in for {{ rental.vehicle.type }} - {{ rental.vehicle.id }}</h1>
+{% else %}
+<h1>You have no rentals</h1>
+{% endif %}
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
 <script>
   let map;
-  let markers = [];
 
   function initMap() {
     //alert("initMap");
     // The location UCCS West Lawn
     const theLocation = { lat: 38.89320, lng: -104.80253 };
-    
+
     // The map, centered at UCCS
     map = new google.maps.Map(document.getElementById("map"), {
       zoom: 14,
       center: theLocation,
     });
-    addMarkers();
-    
-    
-    //alert("initMap done");
-  }
-
-  function addMarkers(){
-    clearMarkers();
 
     var json_data = "{{ response_data }}";
     json_data = json_data.replaceAll("&#x27;", '"');
@@ -48,53 +45,41 @@
           position: { lat: result.latitude, lng: result.longitude },
           title: result.type + result.id
         });
-        markers.push(marker)
       }
     }
+
+    //alert("initMap done");
   }
-
-  function clearMarkers() {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
-    }
-    markers = [];
-  }
-
-
 
   window.initMap = initMap
 </script>
+
 
 <link rel="stylesheet" type="text/css" href="{% static 'vehicleMap.css' %}" />
 
 <div id="map"></div>
 
-{% if rentals %}
-  <h2>Your Rentals:</h2>
-  <ul>
-    {% for rental in rentals %}
-      <li>{{ rental.vehicle.type }} - {{ rental.vehicle.id }} - {{ rental.checkoutTime }}</li>
-    {% endfor %}
-  </ul>
-{% else %}
-<h3>You have no rentals</h3>
-{% endif %}
-
 <!-- Check-in Form -->
 <form method="post" action="{% url 'check_in' %}" id="checkin-form">
-
   {% csrf_token %}
-  <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ vehicle.id }}">
-  <label for="checkin_location">Check-in Vehicle:</label>
-
-  <button type="submit" onclick="handleCheckIn({{ vehicle.id|safe }})">Check In</button>
+  <input type="hidden" name="vehicle_id" value="{{ rental.vehicle.id }}">
+  <label for="checkin_location">Check-in Location:</label>
+  <select name="checkin_location" id="checkin_location" required>
+    <option value="" selected disabled>Select location</option>
+    {% for location, label in form.fields.checkin_location.choices %}
+      <option value="{{ location }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Check In</button>
 </form>
 
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
-</script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"></script>
 <div>
+  <p><a href="{% url 'vehicleMap' %}">Back to Map</p>
   <p><a href="{% url 'home' %}">Home</a></p>
 </div>
 
 {% endblock %}
+
+
+
