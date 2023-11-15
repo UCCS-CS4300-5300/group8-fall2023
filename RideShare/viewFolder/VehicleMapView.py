@@ -11,6 +11,10 @@ class VehicleMapView(View):
   template_name = 'vehicleMap.html'
 
   def get(self, request):
+
+    if not request.user.is_authenticated:
+      return redirect('/signin')
+    
     context = {}
 
     vehicles = Vehicle.objects.all()
