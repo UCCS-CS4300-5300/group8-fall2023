@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Vehicles Checked Out</h1></h1>
+<div>
+  {% for vehicle in vehicles %}
+    {% if vehicle.isAvailable%}
+</div>
+{% endblock %}

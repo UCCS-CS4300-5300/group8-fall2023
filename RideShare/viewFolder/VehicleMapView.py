@@ -37,4 +37,7 @@ class VehicleMapView(View):
     context['vehicles'] = vehicles
     context['response_data'] = response_data
 
+    #if request.method == 'POST':
+     # return render(request, 'vehicleCheckOut.html', context)
+    
     return render(request, self.template_name, context)  
