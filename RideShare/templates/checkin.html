@@ -4,11 +4,7 @@
 {% load static %}
 
 {% block content %}
-{% if rental %}
-<h1>Check-in for {{ rental.vehicle.type }} - {{ rental.vehicle.id }}</h1>
-{% else %}
-<h1>You have no rentals</h1>
-{% endif %}
+
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
@@ -60,18 +56,34 @@
 <div id="map"></div>
 
 <!-- Check-in Form -->
-<form method="post" action="{% url 'check_in' %}" id="checkin-form">
-  {% csrf_token %}
-  <input type="hidden" name="vehicle_id" value="{{ rental.vehicle.id }}">
-  <label for="checkin_location">Check-in Location:</label>
-  <select name="checkin_location" id="checkin_location" required>
-    <option value="" selected disabled>Select location</option>
-    {% for location, label in form.fields.checkin_location.choices %}
-      <option value="{{ location }}">{{ label }}</option>
-    {% endfor %}
-  </select>
-  <button type="submit">Check In</button>
-</form>
+{% if rentals %}
+  <form method="post" action="{% url 'check_in' %}" id="checkin-form">
+    {% csrf_token %}
+    
+    <h2>Your Rentals:</h2>
+    <ul>
+      {% for rental in rentals %}
+        {% if rental.checkinTime == null %}
+          
+            <input type="radio" name="rental_id" value="{{ rental.id }}">{{ rental.vehicle.type }} - {{ rental.vehicle.id }} - {{ rental.checkoutTime }}<br>
+          
+        {% endif %}
+      {% endfor %}
+    </ul>
+    
+    <label for="checkin_location">Check-in Location:</label>
+    <select name="checkin_location" id="checkin_location" required>
+      <option value="" selected disabled>Select location</option>
+      {% for location, label in form.fields.checkin_location.choices %}
+        <option value="{{ location }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Check In</button>
+  </form>
+  {% else %}
+  <h3>You have no rentals</h3>
+{% endif %}
+
 
 <script async src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"></script>
 <div>

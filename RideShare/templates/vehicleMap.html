@@ -48,6 +48,22 @@
           position: { lat: result.latitude, lng: result.longitude },
           title: result.type + result.id
         });
+
+        //creating an info window to specify which vehicle is which marker
+        var contentString = result.type + result.id
+        infowindow = new google.maps.InfoWindow({
+          content: contentString,
+        });
+
+        //infoWindow key
+        marker.infowindow = infowindow;
+
+        //adding click event to marker
+        marker.addListener('click', function() {
+          return this.infowindow.open(map, this);
+        });
+
+        
         markers.push(marker)
       }
     }
@@ -69,6 +85,22 @@
 
 <div id="map"></div>
 
+<!-- Check-Out Form -->
+<form method="post" action="{% url 'vehicleMap' %}" id="checkout-form">
+  {% csrf_token %}
+  <label for="vehicle_id">Choose a vehicle to check out:</label>
+  {% for vehicle in vehicles %}
+  {% if vehicle.isAvailable %}
+    <label>
+      <input type="radio" name="vehicle_id" value="{{ vehicle.id }}">
+      {{ vehicle.type }} (ID: {{ vehicle.id }})
+    </label>
+  {% endif %}
+  {% endfor %}
+  <button type="submit">Confirm Checkout</button>
+</form>
+
+
 {% if rentals %}
   <h2>Your Rentals:</h2>
   <ul>
@@ -86,8 +118,7 @@
   {% csrf_token %}
   <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ vehicle.id }}">
   <label for="checkin_location">Check-in Vehicle:</label>
-
-  <button type="submit")">Check In</button>
+  <button type="submit" class="btn btn-primary")">Check In</button>
 </form>
 
 <script async
