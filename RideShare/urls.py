@@ -6,5 +6,6 @@ urlpatterns = [
   path('', views.home, name='home'),
   path('vehicleMap/', VehicleMapView.as_view(), name='vehicleMap'),
   path('check-in/', CheckInView.as_view(), name='check_in'),
-  path('checkout/', VehicleMapView.as_view(), name='checkout'),
+  path('checkout/', views.checkoutSuccess, name='checkout'),
+  path('checkinSuccess/', views.checkinSuccess, name='checkinSuccess')
 ]

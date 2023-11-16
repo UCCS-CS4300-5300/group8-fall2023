@@ -5,3 +5,9 @@ def home(request):
     return redirect('/signin')
     
   return render(request, 'home.html')
+
+def checkoutSuccess(request):
+  return render(request, 'checkoutSuccess.html')
+
+def checkinSuccess(request):
+  return render(request, 'checkinSuccess.html')

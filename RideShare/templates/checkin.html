@@ -10,6 +10,7 @@
 
 <script>
   let map;
+  let markers = [];
 
   function initMap() {
     //alert("initMap");
@@ -21,6 +22,14 @@
       zoom: 14,
       center: theLocation,
     });
+    addMarkers();
+
+
+    //alert("initMap done");
+  }
+
+  function addMarkers(){
+    clearMarkers();
 
     var json_data = "{{ response_data }}";
     json_data = json_data.replaceAll("&#x27;", '"');
@@ -41,11 +50,35 @@
           position: { lat: result.latitude, lng: result.longitude },
           title: result.type + result.id
         });
+
+        //creating an info window to specify which vehicle is which marker
+        var contentString = result.type + result.id
+        infowindow = new google.maps.InfoWindow({
+          content: contentString,
+        });
+
+        //infoWindow key
+        marker.infowindow = infowindow;
+
+        //adding click event to marker
+        marker.addListener('click', function() {
+          return this.infowindow.open(map, this);
+        });
+
+
+        markers.push(marker)
       }
     }
-
-    //alert("initMap done");
   }
+
+  function clearMarkers() {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+  }
+
+  
 
   window.initMap = initMap
 </script>
@@ -57,20 +90,26 @@
 
 <!-- Check-in Form -->
 {% if rentals %}
-  <form method="post" action="{% url 'check_in' %}" id="checkin-form">
+  <form method="post" action="{% url 'checkinSuccess' %}" id="checkin-form">
     {% csrf_token %}
     
     <h2>Your Rentals:</h2>
     <ul>
       {% for rental in rentals %}
-        {% if rental.checkinTime == null %}
+        {% if rental.checkinTime is None %}
           
-            <input type="radio" name="rental_id" value="{{ rental.id }}">{{ rental.vehicle.type }} - {{ rental.vehicle.id }} - {{ rental.checkoutTime }}<br>
+            <input type="radio" name="rental_id" value="{{ rental.id }}" data-vehicle-id="{{ rental.vehicle.id }}">{{ rental.vehicle.type }} - {{ rental.vehicle.id }} - {{ rental.checkoutTime }}
+        
+        <br>
+         
           
         {% endif %}
+      <script>
+        console.log("Radio button data-vehicle-id:", "{{ rental.vehicle.id }}");
+      </script>
       {% endfor %}
     </ul>
-    
+    <!--
     <label for="checkin_location">Check-in Location:</label>
     <select name="checkin_location" id="checkin_location" required>
       <option value="" selected disabled>Select location</option>
@@ -78,14 +117,57 @@
         <option value="{{ location }}">{{ label }}</option>
       {% endfor %}
     </select>
-    <button type="submit">Check In</button>
+    -->
+    <input type="hidden" name="rental_id" id="rental_id_input" value="">
+    <input type="hidden" name="vehicle_id" id="vehicle_id_input" value="">
+    
+    <button type="submit" id="checkin-submit">Check In</button>
   </form>
+<!--  -->
+  <script>
+    function updateHiddenField() {
+      var selectedRadio = document.querySelector('input[name="rental_id"]:checked');
+      var rentalIdInput = document.getElementById('rental_id_input');
+      var vehicleIdInput = document.getElementById('vehicle_id_input');
+
+      if (selectedRadio) {
+        rentalIdInput.value = selectedRadio.value;
+        vehicleIdInput.value = selectedRadio.getAttribute('data-vehicle-id');
+        console.log('Hidden fields updated:', rentalIdInput.value, vehicleIdInput.value);
+        // Manually trigger the form submission
+        document.getElementById('checkin-form').submit();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var radioButtons = document.querySelectorAll('input[name="rental_id"]');
+      radioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener('click', function () {
+          updateHiddenField();
+        });
+        
+        var radioButtons = document.querySelectorAll('input[name="rental_id"]');
+        radioButtons.forEach(function (radioButton) {
+          radioButton.addEventListener('click', function () {
+            updateHiddenField();
+        });
+      });
+    });
+    
+    
+  </script>
+<!--  -->
   {% else %}
   <h3>You have no rentals</h3>
 {% endif %}
 
 
 <script async src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"></script>
+
+
+
+
+
 <div>
   <p><a href="{% url 'vehicleMap' %}">Back to Map</p>
 </div>

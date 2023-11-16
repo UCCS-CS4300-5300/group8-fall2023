@@ -63,70 +63,69 @@ class VehicleMapView(View):
         vehicle.save()
   
         rental = VehicleRental.objects.create(user=request.user, vehicle=vehicle)
-        return render(request, self.template_name, {'form': form, 'success': True})
+        return render(request, 'checkoutSuccess.html', {'form': form, 'success': True})
   
     vehicles = Vehicle.objects.filter(isAvailable=True)
     return render(request, self.template_name, {'form': form, 'vehicles': vehicles})
-    
+
+
+
 # David - gave up on check in with post function in MapView
 class CheckInView(View):
   template_name = "checkin.html"
 
   def get(self, request):
     form = CheckInForm()
-    return render(request, self.template_name, {'form': form})
+
+    # fetch users current vehicles that are not checked in
+    rentals = VehicleRental.objects.filter(user=request.user, checkinTime__isnull=True)
+
+    return render(request, self.template_name, {'form': form, 'rentals': rentals})
 
   def post(self, request):
     form = CheckInForm(request.POST)
+    print("Form data: ", request.POST)
+    
+    rentals = VehicleRental.objects.filter(user=request.user, checkinTime__isnull=True)
+    print("before if form is valid")
     if form.is_valid():
-      rental_id = form.cleaned_data['rental_id']
-      vehicle_id = form.cleaned_data['vehicle_id']
-      checkin_location = form.cleaned_data['checkin_location']
+      print("in is_valid")
+      # print(f"Rental ID: {form.cleaned_data['rental_id']}")
+      rental_id = form.request.POST.get('rental_id')
+      vehicle_id = form.request.POST.get('vehicle_id')
+      # checkin_location = form.cleaned_data['checkin_location']
 
 
-
-      
       #rentalObject
-      
+
+      print("Hello there, before try-except")
       try:
         # Update the availability of the vehicle
+        print("after try-except")
         vehicle = Vehicle.objects.get(pk=vehicle_id)
         vehicle.isAvailable = True
         vehicle.save()
         
-        rental = VehicleRental.objects.get(pk=rental_id)
+        rental = VehicleRental.objects.get(pk=rental_id, user=request.user, checkinTime__isnull=True)
 
-        rental.checkin_location = checkin_location
+        # rental.checkin_location = checkin_location
         rental.checkin_time = timezone.now()
         rental.save()
-        return redirect('vehicleMap')
-      except Vehicle.DoesNotExist or VehicleRental.DoesNotExit:
+        # rental.delete()
+        return render(request, 'checkinSuccess.html', {'form': form, 'success': True, 'rentals': rentals})
+      except (Vehicle.DoesNotExist, VehicleRental.DoesNotExist):
 
         return render(request, self.template_name) 
 
 
         
-       # rental.checkinLocal = checkin_location
-       # rental.checkinTime = timezone.now()
-       # VehicleRental.objects.filter(pk=rental_id).delete()
-       # VehicleRental.objects.filter(pk=rental_id).save()
 
-
-       # return redirect('vehicleMap')
-    #  print("Rental not found or form data invalid")
-    #  print("Form errors: ", form.errors)
-
-      # handle invalid form data
-    context = {
-      'form': form,
-      'key': 'AIzaSyD-oTBt9sdMhCXyQqrtuok0CYvP7ev58hg',
-      'vehicles': Vehicle.objects.all(),
-      'rentals': VehicleRental.objects.filter(user=request.user, checkinTime__isnull=True),
-      }
+    # handle invalid form data
     
-    print("form errors: ", form.errors)
-    print("Redirecting to 'vehicle_map' failed. Form is not valid or rental is not found.")
-    return render(request, self.template_name, context)
+    print("form errors: ", form.errors.as_data())
+
+    
+    return render(request, self.template_name, {'form': form, 'rentals': rentals})
 
 
 
