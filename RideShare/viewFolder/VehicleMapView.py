@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from RideShare.modelsFolder.VehicleModel import Vehicle
 from RideShare.modelsFolder.VehicleModel import VehicleRental
-from django.urls import reverse
-from RideShare.forms import CheckInForm
+from RideShare.forms import CheckInForm, CheckOutForm
 from django.utils import timezone
 
 
@@ -19,6 +18,8 @@ class VehicleMapView(View):
 
     vehicles = Vehicle.objects.all()
 
+
+    
     """"
     serializers is not working because djangorestframework package will not install
     serialized_data = [
@@ -50,6 +51,22 @@ class VehicleMapView(View):
 
     return render(request, self.template_name, context)  
 
+#Check Out
+  def post(self, request):
+    form = CheckOutForm(request.POST)
+  
+    if form.is_valid():
+      vehicle_id = form.cleaned_data['vehicle_id']
+      vehicle = Vehicle.objects.get(id=vehicle_id)
+      if vehicle.isAvailable:
+        vehicle.isAvailable = False
+        vehicle.save()
+  
+        rental = VehicleRental.objects.create(user=request.user, vehicle=vehicle)
+        return render(request, self.template_name, {'form': form, 'success': True})
+  
+    vehicles = Vehicle.objects.filter(isAvailable=True)
+    return render(request, self.template_name, {'form': form, 'vehicles': vehicles})
     
 # David - gave up on check in with post function in MapView
 class CheckInView(View):
@@ -62,24 +79,42 @@ class CheckInView(View):
   def post(self, request):
     form = CheckInForm(request.POST)
     if form.is_valid():
+      rental_id = form.cleaned_data['rental_id']
       vehicle_id = form.cleaned_data['vehicle_id']
       checkin_location = form.cleaned_data['checkin_location']
 
-      vehicle = Vehicle.objects.get(pk=vehicle_id)
-      rental = VehicleRental.objects.filter(user=request.user, vehicle=vehicle, checkinTime__isnull=True).first()
 
-      if rental: 
-        rental.checkinLocal = checkin_location
-        rental.checkinTime = timezone.now()
-        rental.save()
 
+      
+      #rentalObject
+      
+      try:
         # Update the availability of the vehicle
-        vehicle.is_available = True
+        vehicle = Vehicle.objects.get(pk=vehicle_id)
+        vehicle.isAvailable = True
         vehicle.save()
+        
+        rental = VehicleRental.objects.get(pk=rental_id)
 
+        rental.checkin_location = checkin_location
+        rental.checkin_time = timezone.now()
+        rental.save()
         return redirect('vehicleMap')
-      print("Rental not found or form data invalid")
-      print("Form errors: ", form.errors)
+      except Vehicle.DoesNotExist or VehicleRental.DoesNotExit:
+
+        return render(request, self.template_name) 
+
+
+        
+       # rental.checkinLocal = checkin_location
+       # rental.checkinTime = timezone.now()
+       # VehicleRental.objects.filter(pk=rental_id).delete()
+       # VehicleRental.objects.filter(pk=rental_id).save()
+
+
+       # return redirect('vehicleMap')
+    #  print("Rental not found or form data invalid")
+    #  print("Form errors: ", form.errors)
 
       # handle invalid form data
     context = {
