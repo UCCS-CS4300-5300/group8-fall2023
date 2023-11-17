@@ -80,29 +80,30 @@ class CheckInView(View):
     form = CheckInForm(request.POST)
     if form.is_valid():
       rental_id = form.cleaned_data['rental_id']
-      vehicle_id = form.cleaned_data['vehicle_id']
       checkin_location = form.cleaned_data['checkin_location']
-
+      
 
 
       
       #rentalObject
       
-      try:
-        # Update the availability of the vehicle
-        vehicle = Vehicle.objects.get(pk=vehicle_id)
-        vehicle.isAvailable = True
-        vehicle.save()
-        
-        rental = VehicleRental.objects.get(pk=rental_id)
+      
+      # Update the availability of the vehicle
+      vehicle_id = VehicleRental.objects.get(id=rental_id).vehicle.id
+      vehicle = Vehicle.objects.get(pk=vehicle_id)
+      vehicle.isAvailable = True
+      vehicle.save()
+      
+      rental = VehicleRental.objects.get(pk=rental_id)
 
-        rental.checkin_location = checkin_location
-        rental.checkin_time = timezone.now()
-        rental.save()
-        return redirect('vehicleMap')
-      except Vehicle.DoesNotExist or VehicleRental.DoesNotExit:
+      rental.checkin_location = checkin_location
+      rental.checkin_time = timezone.now()
+      rental.delete()
+      #rental.save()
+      return render(request, self.template_name)
+      #except Vehicle.DoesNotExist or VehicleRental.DoesNotExit:
 
-        return render(request, self.template_name) 
+        #return render(request, self.template_name) 
 
 
         
