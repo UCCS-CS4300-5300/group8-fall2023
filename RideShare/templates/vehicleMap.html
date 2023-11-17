@@ -89,15 +89,17 @@
 <form method="post" action="{% url 'vehicleMap' %}" id="checkout-form">
   {% csrf_token %}
   <label for="vehicle_id">Choose a vehicle to check out:</label>
+  <br>
   {% for vehicle in vehicles %}
   {% if vehicle.isAvailable %}
     <label>
       <input type="radio" name="vehicle_id" value="{{ vehicle.id }}">
       {{ vehicle.type }} (ID: {{ vehicle.id }})
     </label>
+    <br>
   {% endif %}
   {% endfor %}
-  <button type="submit">Confirm Checkout</button>
+  <button type="submit" class="btn btn-primary">Confirm Checkout</button>
 </form>
 
 
@@ -118,7 +120,7 @@
   {% csrf_token %}
   <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ vehicle.id }}">
   <label for="checkin_location">Check-in Vehicle:</label>
-  <button type="submit" class="btn btn-primary")">Check In</button>
+  <button type="submit" class="btn btn-primary"">Check In</button>
 </form>
 
 <script async
