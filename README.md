@@ -1,3 +1,17 @@
+# Overview
+- Advanced Software Engineering at the University of Colorao Colorado Springs
+- CS4300/5300 Group 8 Fall 2023
+- Developers: UCCS Rideshare Application
+- Customers: Star Wars Battle Simulator
+
+### Team Members
+- Ben Hoelting; bhoeltin@uccs.edu 
+- Smatil Boddu; sboddu@uccs.edu 
+- David Jameson; djameson@uccs.edu 
+- John Williams; jwilli11@uccs.edu 
+- Owen Garrett Johnson; ogarrett@uccs.edu 
+- Tiana Schwarz; tschwarz@uccs.edu 
+
 # Python on Replit
 
 This is a template to get you started with Python on Replit. It's ready to go so you can just hit run and start coding!
