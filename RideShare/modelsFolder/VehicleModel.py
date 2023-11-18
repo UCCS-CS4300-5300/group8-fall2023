@@ -9,6 +9,7 @@ class Vehicle(models.Model):
   latitude =  models.FloatField()
   longitude = models.FloatField()
   isAvailable = models.BooleanField(default=True)
+  cost = models.DecimalField(max_digits=10, decimal_places=2, default=5.00)
 
   class Meta:
     ordering = ['type']
