@@ -94,7 +94,7 @@
   {% if vehicle.isAvailable %}
     <label>
       <input type="radio" name="vehicle_id" value="{{ vehicle.id }}">
-      {{ vehicle.type }} - {{ vehicle.id }}
+      {{ vehicle.type }} (ID: {{ vehicle.id }})
     </label>
     <br>
   {% endif %}
@@ -103,15 +103,13 @@
 </form>
 
 
-<!-- Current Rentals -->
 {% if rentals %}
   <h2>Your Rentals:</h2>
-  
+  <ul>
     {% for rental in rentals %}
-      <label>{{ rental.vehicle.type }} - {{ rental.vehicle.id }}: {{ rental.checkoutTime }}</label>
-      <br>
+      <li>{{ rental.vehicle.type }} - {{ rental.vehicle.id }} - {{ rental.checkoutTime }}</li>
     {% endfor %}
-  
+  </ul>
 {% else %}
 <h3>You have no rentals</h3>
 {% endif %}
