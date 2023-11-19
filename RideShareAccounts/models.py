@@ -10,6 +10,3 @@ class Account(models.Model):
 
     class Meta:
         ordering = ['user']
-
-    def __str__(self):
-        return self.user.username

@@ -1,15 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="signupform" class="container">
-  <!--Django Model Form-->
-  <h2>Sign Up</h2>
-  <form method="post" class="container text-center" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button class="btn btn-primary my-4" type="submit">Submit</button>
-  </form>
-  <h3>Already Have an Account??</h3>
-  <a href = "{% url 'signinpage' %}">Sign In Here</a>
-</div>
+    <div id="signupform" class="container">
+        <form method="post" class="container text-center" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--Django Model Form-->
+            <h2>Sign Up</h2>
+            {% for field in form %}
+                <p>
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {{ field.label_tag }} {{ field }}
+                </p>
+            {% endfor %}
+            <p>
+                <label>Default Payment Method:</label>
+                <select name="defaultPaymentMethod" id="defaultPaymentMethod">
+                    {% for method in paymentMethods %}
+                        {% if method.id == 1 %}
+                            <option selected="selected" value="{{ method.id }}">{{ method.description }}</option>
+                        {% else %}
+                            <option value="{{ method.id }}">{{ method.description }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </p>
+            <button class="btn btn-primary my-4" type="submit">Submit</button>
+        </form>
+        <h3>Already Have an Account??</h3>
+        <a href="{% url 'signinpage' %}">Sign In Here</a>
+    </div>
 {% endblock %}

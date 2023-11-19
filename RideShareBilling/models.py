@@ -8,9 +8,6 @@ class PaymentMethod(models.Model):
     class Meta:
         ordering = ['id']
 
-    def __str__(self):
-        return self.description
-
 
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -20,6 +17,3 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ['id']
-
-    def __str__(self):
-        return f"ID: {self.id} UserName: {self.user.username} Method: {self.paymentMethod.description} Amount: ${self.amountPaid} Date: {self.timePaid}"
