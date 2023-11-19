@@ -1,30 +1,36 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from RideShareAccounts.forms import SignUpForm
+from RideShareAccounts.models import Account, PaymentMethod
+
 
 def signuppage(request):
+    if request.user.is_authenticated:
+        return redirect('/')
 
-      if request.user.is_authenticated:
-          return redirect('/')
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
 
-      if request.method == 'POST':
-          form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
 
-          if form.is_valid():
-              form.save()
-              username = form.cleaned_data['username']
-              password = form.cleaned_data['password1']
-              user = authenticate(username = username,password = password)
-              login(request, user)
-              return redirect('/')
+            account = Account(user_id=user.id, defaultPaymentMethod_id=(request.POST['defaultPaymentMethod']))
+            account.save()
 
-          else:
-              return render(request,'signup.html',{'form':form})
+            login(request, user)
+            return redirect('/')
 
-      else:
-          form = UserCreationForm()
-          return render(request,'signup.html',{'form':form})
+        else:
+            paymentMethods = PaymentMethod.objects.all()
+            return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
+
+    else:
+        form = SignUpForm()
+        paymentMethods = PaymentMethod.objects.all()
+        return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
+
 
 def signinpage(request):
     if request.user.is_authenticated:
@@ -33,19 +39,20 @@ def signinpage(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username =username, password = password)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request,user)
+            login(request, user)
             return redirect('/')
         else:
             form = AuthenticationForm()
-            return render(request,'signin.html',{'form':form})
+            return render(request, 'signin.html', {'form': form})
 
     else:
         form = AuthenticationForm()
-        return render(request, 'signin.html', {'form':form})
+        return render(request, 'signin.html', {'form': form})
+
 
 def logoutpage(request):
-  logout(request)
-  return redirect('/signin')
+    logout(request)
+    return redirect('/signin')
