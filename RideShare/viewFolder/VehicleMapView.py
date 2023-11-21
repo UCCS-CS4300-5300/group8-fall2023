@@ -63,7 +63,15 @@ class VehicleMapView(View):
         vehicle.save()
   
         rental = VehicleRental.objects.create(user=request.user, vehicle=vehicle)
-        return render(request, self.template_name, {'form': form, 'success': True})
+
+        #With how post works, you need to redirect to the same page so that 
+        #it recieves a GET request
+        #in order to do that you need redirect, but you cant pass in 'vehicleMap', you need to
+        #pass in a variable that holds 'vehicleMap'
+        redirectView = 'vehicleMap'
+        return redirect(redirectView)
+        #return render(request, self.template_name, {'form': form, 'success': True})
+
   
     vehicles = Vehicle.objects.filter(isAvailable=True)
     return render(request, self.template_name, {'form': form, 'vehicles': vehicles})
@@ -75,7 +83,12 @@ class CheckInView(View):
 
   def get(self, request):
     form = CheckInForm()
-    return render(request, self.template_name, {'form': form})
+    context = {
+      'form': form,
+      'key': 'AIzaSyD-oTBt9sdMhCXyQqrtuok0CYvP7ev58hg',
+      'rentals': VehicleRental.objects.filter(user=request.user, checkinTime__isnull=True),
+      }
+    return render(request, self.template_name, context)
 
   def post(self, request):
     form = CheckInForm(request.POST)
@@ -84,7 +97,7 @@ class CheckInView(View):
       checkin_location = form.cleaned_data['checkin_location']
       
 
-
+ 
       
       #rentalObject
       
@@ -101,22 +114,10 @@ class CheckInView(View):
       rental.checkin_time = timezone.now()
       rental.delete()
       #rental.save()
-      return render(request, self.template_name)
-      #except Vehicle.DoesNotExist or VehicleRental.DoesNotExit:
+      redirectView = 'check_in'
 
-        #return render(request, self.template_name) 
+      return redirect(redirectView)
 
-
-        
-       # rental.checkinLocal = checkin_location
-       # rental.checkinTime = timezone.now()
-       # VehicleRental.objects.filter(pk=rental_id).delete()
-       # VehicleRental.objects.filter(pk=rental_id).save()
-
-
-       # return redirect('vehicleMap')
-    #  print("Rental not found or form data invalid")
-    #  print("Form errors: ", form.errors)
 
       # handle invalid form data
     context = {
