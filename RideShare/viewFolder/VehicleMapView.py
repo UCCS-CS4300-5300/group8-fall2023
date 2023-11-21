@@ -68,7 +68,8 @@ class VehicleMapView(View):
     vehicles = Vehicle.objects.filter(isAvailable=True)
     return render(request, self.template_name, {'form': form, 'vehicles': vehicles})
     
-# David - gave up on check in with post function in MapView
+
+# Check in View
 class CheckInView(View):
   template_name = "checkin.html"
 
