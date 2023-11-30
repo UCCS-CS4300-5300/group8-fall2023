@@ -5,3 +5,4 @@ def home(request):
     return redirect('/signin')
     
   return render(request, 'home.html')
+

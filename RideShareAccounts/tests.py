@@ -4,21 +4,47 @@ from .forms import SignUpForm
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from RideShareBilling.models import PaymentMethod, Payment
+from .models import Account
 
 # Create your tests here.
 class TestSignUpForm(TestCase):
   def test_signup_form_valid(self):
-    form = SignUpForm(data={'username': 'test', 
-                            'password': 'test', 
-                            'email': 'testuser@example.com',
-                            'first_name': 'test',
-                            'last_name': 'user'})
+    data = {
+      'username': 'testuser',
+      'password1': 'testpassword123',
+      'password2': 'testpassword123',
+      'email': 'testuser@example.com',
+    }
+    form = SignUpForm(data)
     self.assertTrue(form.is_valid())
 
   def test_signup_invalid_form(self):
     form = SignUpForm(data={})
     self.assertFalse(form.is_valid())
-    self.assertEquals(len(form.errors), 2)
+    self.assertEquals(len(form.errors), 3)
+
+
+  def test_mismatched_passwords(self):
+    data = {
+        'username': 'testuser',
+        'password1': 'testpassword123',
+        'password2': 'differentpassword',
+        'email': 'testuser@example.com',
+    }
+    form = SignUpForm(data)
+    self.assertFalse(form.is_valid())
+    self.assertIn('password2', form.errors)
+
+  def test_creates_user(self):
+    data = {
+        'username': 'testuser',
+        'password1': 'testpassword123',
+        'password2': 'testpassword123',
+        'email': 'testuser@example.com',
+    }
+    self.assertFalse(User.objects.filter(username=data['username']).exists())
+
 
 
 class TestSignUpView(TestCase):
@@ -145,6 +171,56 @@ class TestLogoutView(TestCase):
   def test_logged_out_user_redirected(self):
     response = self.client.get(reverse('logoutpage'))
     self.assertEqual(response.status_code, 302)
+
+
+class TestRideShareAccountsModels(TestCase):
+  def setUp(self):
+    self.user = User.objects.create_user(username='testuser', password='testpassword')
+    self.payment_method = PaymentMethod.objects.create(description='Test Payment Method')
+
+  def test_create_account(self):
+    account = Account.objects.create(user=self.user, defaultPaymentMethod=self.payment_method)
+    self.assertEqual(account.user, self.user)
+    self.assertEqual(account.defaultPaymentMethod, self.payment_method)
+    self.assertEqual(account.outstandingBalance, 0.00)
+
+
+  def test_account_ordering(self):
+    user1 = User.objects.create_user(username='user1', password='password1')
+    user2 = User.objects.create_user(username='user2', password='password2')
+
+    account1 = Account.objects.create(user=user1, defaultPaymentMethod=self.payment_method)
+    account2 = Account.objects.create(user=user2, defaultPaymentMethod=self.payment_method)
+
+    ordered_accounts = list(Account.objects.all())
+
+    self.assertEqual(ordered_accounts, [account1, account2])
+
+
+  def test_default_balance(self):
+     account = Account.objects.create(user=self.user, defaultPaymentMethod=self.payment_method)
+     self.assertEqual(account.outstandingBalance, 0.00)
+
+
+class TestURLS(TestCase):
+  def test_signuppage_mapping(self):
+    url = reverse('signuppage')
+    self.assertEqual(url, '/signup/')
+    response = self.client.get(url)
+    self.assertEqual(response.status_code, 200)
+
+  def test_signinpage_mapping(self):
+    url = reverse('signinpage')
+    self.assertEqual(url, '/signin/')
+    response = self.client.get(url)
+    self.assertEqual(response.status_code, 200)
+
+  def test_logoutpage_mapping(self):
+    url = reverse('logoutpage')
+    self.assertEqual(url, '/logout/')
+    response = self.client.get(url)
+    self.assertEqual(response.status_code, 302)
+    
 
     
     

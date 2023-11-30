@@ -35,4 +35,5 @@ class VehicleRental(models.Model):
                                     choices=locations, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.vehicle.type} - {self.checkout_time}"
+        return f"{self.user.username} - {self.vehicle.type} - {self.checkoutTime}"
+
