@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="accountform" class="container">
+        <form method="post" class="container text-center" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--Django Model Form-->
+            <h2>Account</h2>
+            <p>
+                <input type="hidden" name="userId" id="userId" value="{{ userId }}">
+                {{ field.label_tag }} {{ field }}
+                <label>Default Payment Method:</label>
+                <select name="defaultPaymentMethod" id="defaultPaymentMethod">
+                    {% for method in paymentMethods %}
+                        {% if method.id == 1 %}
+                            <option selected="selected" value="{{ method.id }}">{{ method.description }}</option>
+                        {% else %}
+                            <option value="{{ method.id }}">{{ method.description }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </p>
+            <button class="btn btn-primary my-4" type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
