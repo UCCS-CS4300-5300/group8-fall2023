@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from RideShareAccounts.forms import SignUpForm, AccountForm
 from RideShareAccounts.models import Account, PaymentMethod
+from django.contrib.auth.models import User
 
 
 def signuppage(request):
@@ -22,14 +23,9 @@ def signuppage(request):
             login(request, user)
             return redirect('/')
 
-        else:
-            paymentMethods = PaymentMethod.objects.all()
-            return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
-
-    else:
-        form = SignUpForm()
-        paymentMethods = PaymentMethod.objects.all()
-        return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
+    form = SignUpForm()
+    paymentMethods = PaymentMethod.objects.all()
+    return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
 
 
 def signinpage(request):
@@ -66,20 +62,14 @@ def accountpage(request):
         form = AccountForm(request.POST)
 
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
+            request.user.username = form.data['userName']
+            request.user.email = form.data['userEmail']
+            request.user.save()
 
-            account = Account(user_id=user.id, defaultPaymentMethod_id=(request.POST['defaultPaymentMethod']))
+            account = Account.objects.get(user=request.user)
+            account.defaultPaymentMethod_id = form.data['defaultPaymentMethod']
             account.save()
 
-            login(request, user)
-            return redirect('/')
-
-        else:
-            paymentMethods = PaymentMethod.objects.all()
-            return render(request, 'account.html', {'form': form, 'paymentMethods': paymentMethods})
-
-    else:
-        form = AccountForm()
-        paymentMethods = PaymentMethod.objects.all()
-        return render(request, 'account.html', {'form': form, 'paymentMethods': paymentMethods})
+    form = AccountForm()
+    paymentMethods = PaymentMethod.objects.all()
+    return render(request, 'account.html', {'form': form, 'user': request.user, 'paymentMethods': paymentMethods})
