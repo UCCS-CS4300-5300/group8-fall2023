@@ -18,7 +18,7 @@
                 <label>Default Payment Method:</label>
                 <select name="defaultPaymentMethod" id="defaultPaymentMethod">
                     {% for method in paymentMethods %}
-                        {% if method.id == 1 %}
+                        {% if method.id == defaultPaymentMethodId %}
                             <option selected="selected" value="{{ method.id }}">{{ method.description }}</option>
                         {% else %}
                             <option value="{{ method.id }}">{{ method.description }}</option>

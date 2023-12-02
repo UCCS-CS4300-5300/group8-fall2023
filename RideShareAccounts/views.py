@@ -72,4 +72,8 @@ def accountpage(request):
 
     form = AccountForm()
     paymentMethods = PaymentMethod.objects.all()
-    return render(request, 'account.html', {'form': form, 'user': request.user, 'paymentMethods': paymentMethods})
+    account = Account.objects.get(user=request.user)
+    return render(request, 'account.html',
+                  {'form': form, 'user': request.user,
+                   'defaultPaymentMethodId': account.defaultPaymentMethod_id,
+                   'paymentMethods': paymentMethods})
