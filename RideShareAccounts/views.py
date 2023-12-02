@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from RideShareAccounts.forms import SignUpForm
+from RideShareAccounts.forms import SignUpForm, AccountForm
 from RideShareAccounts.models import Account, PaymentMethod
+from django.contrib.auth.models import User
 
 
 def signuppage(request):
@@ -22,14 +23,9 @@ def signuppage(request):
             login(request, user)
             return redirect('/')
 
-        else:
-            paymentMethods = PaymentMethod.objects.all()
-            return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
-
-    else:
-        form = SignUpForm()
-        paymentMethods = PaymentMethod.objects.all()
-        return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
+    form = SignUpForm()
+    paymentMethods = PaymentMethod.objects.all()
+    return render(request, 'signup.html', {'form': form, 'paymentMethods': paymentMethods})
 
 
 def signinpage(request):
@@ -56,3 +52,28 @@ def signinpage(request):
 def logoutpage(request):
     logout(request)
     return redirect('/signin')
+
+
+def accountpage(request):
+    if not request.user.is_authenticated:
+        return redirect('/signin')
+
+    if request.method == 'POST':
+        form = AccountForm(request.POST)
+
+        if form.is_valid():
+            request.user.username = form.data['userName']
+            request.user.email = form.data['userEmail']
+            request.user.save()
+
+            account = Account.objects.get(user=request.user)
+            account.defaultPaymentMethod_id = form.data['defaultPaymentMethod']
+            account.save()
+
+    form = AccountForm()
+    paymentMethods = PaymentMethod.objects.all()
+    account = Account.objects.get(user=request.user)
+    return render(request, 'account.html',
+                  {'form': form, 'user': request.user,
+                   'defaultPaymentMethodId': account.defaultPaymentMethod_id,
+                   'paymentMethods': paymentMethods})
