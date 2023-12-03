@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-  <!--Django Model Form-->
-  <h2>Sign In</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button class="btn btn-primary my-4" type="submit">Submit</button>
-  </form>
-  <h3>Don't have an account??</h3><br>
-  <a href = "{% url 'signuppage' %}">Sign Up Here</a>
-</div>
+    <div class="container">
+        <!--Django Model Form-->
+        <h2>Sign In</h2>
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary my-4" type="submit">Submit</button>
+        </form>
+        <h3>Don't have an account??</h3><br>
+        <a href="{% url 'signuppage' %}">Sign Up Here</a>
+    </div>
 {% endblock %}

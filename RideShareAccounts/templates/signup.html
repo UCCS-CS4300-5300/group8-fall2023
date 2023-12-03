@@ -6,6 +6,7 @@
             {% csrf_token %}
             <!--Django Model Form-->
             <h2>Sign Up</h2>
+            <br>
             {% for field in form %}
                 <p>
                     {% if field.errors %}

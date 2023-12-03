@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 
-from RideShareAccounts.forms import SignUpForm, AccountForm
+from RideShareAccounts.forms import SignUpForm, AccountForm, ChangePasswordForm
 from RideShareAccounts.models import Account, PaymentMethod
 
 
@@ -82,13 +82,13 @@ def accountpage(request):
 
 def changepasswordpage(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
+        form = ChangePasswordForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             return redirect('accountpage')
     else:
-        form = PasswordChangeForm(request.user)
+        form = ChangePasswordForm(request.user)
     return render(request, 'changepassword.html', {
         'form': form
     })
