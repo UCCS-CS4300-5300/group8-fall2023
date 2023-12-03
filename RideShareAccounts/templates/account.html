@@ -1,18 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="text-start"><h2>Account</h2></div>
+            <div class="text-end"><h2>Outstanding Balance: ${{ outstandingBalance }}</h2></div>
+        </div>
+    <br>
     <div id="accountform" class="container">
         <form method="post" class="container text-center" enctype="multipart/form-data">
             {% csrf_token %}
             <!--Django Model Form-->
-            <h2>Account</h2>
             <p>
                 {{ form.userName.label_tag }}
-                <input type="text" name="userName" maxlength="200" required="" id="id_userName" data-maxzpsw="0" value="{{ user.username }}">
+                <input type="text" name="userName" maxlength="200" required="" id="id_userName" data-maxzpsw="0"
+                       value="{{ user.username }}">
             </p>
             <p>
                 {{ form.userEmail.label_tag }}
-                 <input type="text" name="userEmail" maxlength="200" required="" id="id_userEmail" data-maxzpsw="0"value="{{ user.email }}">
+                <input type="text" name="userEmail" maxlength="200" required="" id="id_userEmail" data-maxzpsw="0"
+                       value="{{ user.email }}">
             </p>
             <p>
                 <label>Default Payment Method:</label>
@@ -26,7 +32,10 @@
                     {% endfor %}
                 </select>
             </p>
-            <button class="btn btn-primary my-4" type="submit">Submit</button>
+            <button class="btn btn-primary my-4" onclick="window.location.href='{% url 'changepasswordpage' %}'" type="button">
+                Change Password
+            </button>
+            <button class="btn btn-primary my-4" type="submit">Save Changes</button>
         </form>
     </div>
 {% endblock %}
