@@ -40,9 +40,9 @@ class TestVehicleMapView(TestCase):
     self.client.login(username='testuser', password='12345')
     data = {'vehicle_id': self.vehicle.id}
     response = self.client.post(reverse('vehicleMap'), data)
-    self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, 'vehicleMap.html')
-    self.assertTrue(response.context['success'])
+    self.assertEqual(response.status_code, 302)
+    self.assertRedirects(response, reverse('vehicleMap'))
+
 
     # test if vehicle is marked as not available after checkout
     self.vehicle.refresh_from_db()
@@ -87,14 +87,14 @@ class TestCheckInView(TestCase):
 
   def test_get_check_in_view_not_authenticated(self):
     response = self.client.get(reverse('check_in'))
-    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.status_code, 302)
 
   def test_post_check_in_view_success(self):
-    self.client.login(username='testuser', password='testpassword')
+    self.client.login(username='testuser', password='12345')
     form_data = {'rental_id': self.rental.id, 'checkin_location': 'Location1'}
-    response = self.client.post(reverse('check_in'), form_data)
+    response = self.client.post(reverse('check_in'), form_data, follow=True)
     self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, 'checkin.html')
+    self.assertRedirects(response, reverse('check_in'))
 
     # Check if the vehicle is marked as available after check-in
     self.vehicle.refresh_from_db()
