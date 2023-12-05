@@ -6,6 +6,7 @@ from RideShareAccounts.forms import SignUpForm, AccountForm, ChangePasswordForm
 from RideShareAccounts.models import Account, PaymentMethod
 from RideShareBilling.models import Payment
 
+
 def signuppage(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -72,8 +73,7 @@ def accountpage(request):
 
     form = AccountForm()
     paymentMethods = PaymentMethod.objects.all()
-    userPayments = Payment.objects.all()
-
+    userPayments = Payment.objects.filter(user=request.user)
     account = Account.objects.get(user=request.user)
     return render(request, 'account.html',
                   {'form': form, 'user': request.user,

@@ -51,8 +51,8 @@
     <tbody>
   {% for payment in userPayments %}
       <tr>
-        <td>{{ payment.date }}</td>
-        <td>{{ payment.amount }}</td>
+        <td>{{ payment.timePaid }}</td>
+        <td>{{ payment.amountPaid }}</td>
         <td>{{ payment.paymentMethod.description }}</td>
       </tr>
   {% endfor %}    
