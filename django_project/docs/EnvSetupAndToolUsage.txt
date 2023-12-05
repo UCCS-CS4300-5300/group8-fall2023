@@ -1,0 +1,16 @@
+Open a Shell tab
+source /home/runner/group8-fall2023/venv/bin/activate
+
+Running pylint
+pylint <file_or_directory>
+
+Running coverage
+coverage run manage.py test RideShare.tests
+coverage report -m
+
+Running radon
+Lines  of Code (LOC): radon raw  <file>.py
+Cyclomatic Complexity: radon cc <file>.py
+ABC Score: radon cc -a -s RideShare
+Maintainability index: radon mi RideShare
+Halstead Metrics: radon hal RideShare
