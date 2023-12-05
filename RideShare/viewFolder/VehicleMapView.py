@@ -5,6 +5,9 @@ from RideShare.modelsFolder.VehicleModel import VehicleRental
 from RideShare.forms import CheckInForm, CheckOutForm
 from django.utils import timezone
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 
 class VehicleMapView(View):
   template_name = 'vehicleMap.html'
@@ -78,6 +81,7 @@ class VehicleMapView(View):
     
 
 # Check in View
+@method_decorator(login_required, name='dispatch')
 class CheckInView(View):
   template_name = "checkin.html"
 

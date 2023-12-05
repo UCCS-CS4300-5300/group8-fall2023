@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 
 from RideShareAccounts.forms import SignUpForm, AccountForm, ChangePasswordForm
 from RideShareAccounts.models import Account, PaymentMethod
+from RideShareBilling.models import Payment
 
 
 def signuppage(request):
@@ -72,12 +73,13 @@ def accountpage(request):
 
     form = AccountForm()
     paymentMethods = PaymentMethod.objects.all()
+    userPayments = Payment.objects.filter(user=request.user)
     account = Account.objects.get(user=request.user)
     return render(request, 'account.html',
                   {'form': form, 'user': request.user,
                    'defaultPaymentMethodId': account.defaultPaymentMethod_id,
                    'outstandingBalance': account.outstandingBalance,
-                   'paymentMethods': paymentMethods})
+                   'paymentMethods': paymentMethods, 'userPayments': userPayments})
 
 
 def changepasswordpage(request):
