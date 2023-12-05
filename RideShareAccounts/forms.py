@@ -14,7 +14,8 @@ class AccountForm(forms.Form):
     userEmail = forms.CharField(label='Email', max_length=200, widget=forms.TextInput())
     defaultPaymentMethod = forms.ModelChoiceField(queryset=PaymentMethod.objects.all(), label="Default Payment Method")
 
+
 class ChangePasswordForm(PasswordChangeForm):
-    class Meta:
-        model = User
-        fields = ['oldpassword', 'newpassword1', 'newpassword2']
+  class Meta:
+      model = User
+      fields = ['oldpassword', 'newpassword1', 'newpassword2']

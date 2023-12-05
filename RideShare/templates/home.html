@@ -4,6 +4,22 @@
 {% block content %}
 <div>
   <img src="{% static 'images/ExtendBikeScreen.PNG' %}" class="img-fluid" alt="UCCS Ride Share Home"/>
+  <br>
+
+  
 </div>
+
+<button type="submit" class="btn btn-primary" onclick="showAlert()">About UCCS Ride Share</button>
+
+
+<script>
+  function showAlert() {
+    alert("---------------------ABOUT UCCS RIDE SHARE-------------------------" + "\n\n"+"UCCS RideShare is a Mobile and Online App that provides UCCS Adults with Travel options on and near the UCCS Campus." + "\n\n" + "Users can find available Vehicles on a Map, Check Out an Available Vehicle, and then later Check In the Vehicle they previously Checked Out." + "\n\n" + "Currently, the only Vehicle type supported is the Scooter. But that may be easily expanded to include other forms of transportation." + "\n\n" + "App Created By:" + "\n" + "--------------------------" + "\n" + "Smatil Boddu " + "\n" + "Benton Hoelting " + "\n" + "David Jameson" + "\n" + "Owen Garret Johnson" + "\n" + "Tiana Schwarz" + "\n" + "John Williams" + "\n" + "--------------------------" + "\n" + "App Created For CS 4300/5300 - Fall 2023 - Advanced Software Engineering")
+  }
+</script>
+
+
+
+
 
 {% endblock %}
