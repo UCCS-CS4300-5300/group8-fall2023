@@ -345,26 +345,3 @@ class TestVehicleRentalModel(TestCase):
 
     rentals = VehicleRental.objects.all()
     self.assertEqual(list(rentals), [self.rental, rental2, rental3])
-
-
-#Testing the billing fuctionality for checking in a vehicle
-# class TestVehicleCheckinBilling(TestCase):
-#   def setUp(self):
-#     self.client = Client()
-#     self.user = User.objects.create_user(username='testuser', password='12345')
-#     self.paymentMethod = PaymentMethod.objects.create(description='test payment method')
-#     self.account = Account.objects.create(
-#       user=self.user, 
-#       defaultPaymentMethod=self.paymentMethod)
-    
-#     self.vehicle = Vehicle.objects.create(
-#       type='Scooter',
-#       latitude=38.89320,
-#       longitude=-104.80253,
-#       isAvailable=False
-#     )
-#     self.rental = VehicleRental.objects.create(user=self.user, vehicle=self.vehicle)
-
-#   def test_checkin_billing(self):
-    
-#     self.assertEqual(self.account.defaultPaymentMethod.description, 'test payment method')
