@@ -9,7 +9,9 @@ from .models import Account
 
 # Create your tests here.
 #Form testing
+# test the sign up form
 class TestSignUpForm(TestCase):
+  # test a valid sign up form
   def test_signup_form_valid(self):
     data = {
       'username': 'testuser',
@@ -20,12 +22,13 @@ class TestSignUpForm(TestCase):
     form = SignUpForm(data)
     self.assertTrue(form.is_valid())
 
+  # test an invalid sign up form (i.e. missing data)
   def test_signup_invalid_form(self):
     form = SignUpForm(data={})
     self.assertFalse(form.is_valid())
     self.assertEquals(len(form.errors), 3)
 
-
+  # test a form with passwords that don't match
   def test_mismatched_passwords(self):
     data = {
         'username': 'testuser',
@@ -37,6 +40,7 @@ class TestSignUpForm(TestCase):
     self.assertFalse(form.is_valid())
     self.assertIn('password2', form.errors)
 
+  # test the form to ensure that a new user does not exist yet
   def test_creates_user(self):
     data = {
         'username': 'testuser',
@@ -48,11 +52,13 @@ class TestSignUpForm(TestCase):
 
 # end of Testing SignUpForm
 
+
 #test change password form
 class TestChangePasswordForm(TestCase):
   # should pass when implemented fully
   def setUp(self):
     self.user = User.objects.create_user(username='testuser', password='oldpassword123')
+    
   def test_change_valid_form(self):
     
     form = ChangePasswordForm(user = self.user, data = {
@@ -68,6 +74,7 @@ class TestChangePasswordForm(TestCase):
 
 # tests various cases with signing up
 class TestSignUpView(TestCase):
+  # test the sign up view when logged in where it goes to the home page
   def test_authenticated_user_redirected(self):
     self.user = User.objects.create_user(username='test', password='test')
     self.client.login(username='test', password='test')
@@ -76,12 +83,14 @@ class TestSignUpView(TestCase):
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, reverse('home'))
 
+  # test the view when not logged in
   def test_get_request_return_signup_form(self):
     response = self.client.get(reverse('signuppage'))
     self.assertEqual(response.status_code, 200)
     self.assertTemplateUsed(response, 'signup.html')
     self.assertIsInstance(response.context['form'], UserCreationForm)
 
+  # test the view with a valid sign up form so it redirects to hom
   def test_valid_signup_form_redirects_to_home(self):
     data = {
       'username': 'test',
@@ -93,7 +102,7 @@ class TestSignUpView(TestCase):
 
  
 
-  
+  # test a new user being created to go home
   def tests_authenticated_user_redirected(self):
     user = User.objects.create_user(username='test', password='test')
     self.client.login(username='test', password='test')
@@ -107,7 +116,7 @@ class TestSignUpView(TestCase):
     response = self.client.post(reverse('signuppage'), data)
     self.assertEqual(response.status_code, 302)
 
-  # these two test functions are being strange. they should work but they aren't
+  # these two test functions are being strange. they should work but they aren't, commented out for now
   '''
   def test_existing_user_authentication_error(self):
     user = User.objects.create_user(username='test', password='test')
@@ -140,6 +149,7 @@ class TestSignUpView(TestCase):
 
 # tests various cases of signing into the app
 class TestSignInView(TestCase):
+  # test the sign in view when logged in where it goes to the home page
   def test_authenticated_user_redirected(self):
     self.user = User.objects.create_user(username='test', password='test')
     self.client.login(username='test', password='test')
@@ -148,21 +158,25 @@ class TestSignInView(TestCase):
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, reverse('home'))
 
+  # test the view when not logged in
   def test_get_request_return_signin_form(self):
     response = self.client.get(reverse('signinpage'))
     self.assertEqual(response.status_code, 200)
     self.assertTemplateUsed(response, 'signin.html')
     self.assertIsInstance(response.context['form'], AuthenticationForm)
 
+  # test the view with a valid sign in form so it redirects to home
   def test_valid_signin_form_redirects_to_home(self):
     data = {
       'username': 'test',
       'password': 'test',
     }
-    response = self.client.post(reverse('signinpage'), data)
+    response = self.client.post(reverse('signinpage'), data)\
+    # acting strange 
     # self.assertEqual(response.status_code, 302)
     # self.assertEqual(response, reverse('home'))
 
+  # test a bad sign in 
   def test_invalid_signin(self):
     data = {
       'username': 'test',
@@ -177,6 +191,7 @@ class TestSignInView(TestCase):
 
 # these tests evaluate logging out
 class TestLogoutView(TestCase):
+  # test the logout view when logging out
   def test_authenticated_user_redirected(self):
     self.user = User.objects.create_user(username='test', password='test')
     self.client.login(username='test', password='test')
@@ -185,6 +200,7 @@ class TestLogoutView(TestCase):
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, '/signin')
 
+  # tests the logout view when not logged in after loggind out
   def test_logged_out_user_redirected(self):
     response = self.client.get(reverse('logoutpage'))
     self.assertEqual(response.status_code, 302)
@@ -193,7 +209,7 @@ class TestLogoutView(TestCase):
 
 # These tests will test the Models of RideShareAccounts
 class TestRideShareAccountsModels(TestCase):
-  # generic set up func
+  # generic set up function
   def setUp(self):
     self.user = User.objects.create_user(username='testuser', password='testpassword')
     self.payment_method = PaymentMethod.objects.create(description='Test Payment Method')
@@ -228,6 +244,8 @@ class TestRideShareAccountsModels(TestCase):
 
 # This class will test the url paths of the RideShareAccounnts urls.py
 class TestURLS(TestCase):
+  # mostly self explanatory test functions
+  # each test function will test a different url path
   def test_signuppage_mapping(self):
     url = reverse('signuppage')
     self.assertEqual(url, '/signup/')

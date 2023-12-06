@@ -3,7 +3,10 @@ from .models import PaymentMethod, Payment
 from django.contrib.auth.models import User
 
 # Create your tests here.
+
+# test the payment method model
 class TestPaymentMethodModel(TestCase):
+  # test the creation of a payment method
   def test_payment_method_creation(self):
     payment_method = PaymentMethod(description="Paypal Payment Method")
     self.assertEqual(payment_method.description, 'Paypal Payment Method')
@@ -15,19 +18,24 @@ class TestPaymentMethodModel(TestCase):
 
     self.assertEqual(ordered_payment_methods, [payment_method1, payment_method2])
 
+# end of test payment method model
 
+# test the Payment model
 class TestPaymentModel(TestCase):
+  # generic set up function
+  # sets up a user and a payment method
   def setUp(self):
     self.user = User.objects.create_user(username='testuser', password='testpassword')
     self.payment_method = PaymentMethod.objects.create(description='Test Payment Method')
 
-
+  # tests the creation of a payment
   def test_create_payment(self):
     payment = Payment.objects.create(user=self.user, paymentMethod=self.payment_method, amountPaid=50.00)
     self.assertEqual(payment.user, self.user)
     self.assertEqual(payment.paymentMethod, self.payment_method)
     self.assertEqual(payment.amountPaid, 50.00)
 
+  # tests ordering of payments with different users
   def test_payment_ordering(self):
     user1 = User.objects.create_user(username='user1', password='password1')
     user2 = User.objects.create_user(username='user2', password='password2')
@@ -37,3 +45,5 @@ class TestPaymentModel(TestCase):
 
     ordered_payments = list(Payment.objects.all())
     self.assertEqual(ordered_payments, [payment1, payment2])
+
+# end of test payment model
