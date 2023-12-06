@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from .forms import CheckInForm, CheckOutForm
 from django.utils import timezone
 from django import forms
+from RideShareAccounts.models import Account
+from RideShareBilling.models import PaymentMethod
 
 # Create your tests here.
 # Tests for the normal views.py file, we mostly used a different file
@@ -86,7 +88,14 @@ class TestCheckInView(TestCase):
     # set up a user
     self.client = Client()
     self.user = User.objects.create_user(username='testuser', password='12345')
+
+    self.paymentMethod = PaymentMethod.objects.create(description='test payment method')
+    self.account = Account.objects.create(
+      user=self.user, 
+      defaultPaymentMethod=self.paymentMethod)
+
     #set up a vehicle
+
     self.vehicle = Vehicle.objects.create(
       type='Scooter',
       latitude=38.89320,
@@ -96,7 +105,9 @@ class TestCheckInView(TestCase):
     # set up a rental
     self.rental = VehicleRental.objects.create(user=self.user, vehicle=self.vehicle)
 
+
   # test the check in view when logged in
+
   def test_get_check_in_view_authenticated(self):
     self.client.login(username='testuser', password='12345')
     response = self.client.get(reverse('check_in'))
@@ -120,11 +131,42 @@ class TestCheckInView(TestCase):
     self.vehicle.refresh_from_db()
     self.assertTrue(self.vehicle.isAvailable)
 
-    # Check if the rental is deleted
-    with self.assertRaises(VehicleRental.DoesNotExist):
-        VehicleRental.objects.get(pk=self.rental.id)
+    # Check if the rental is now has a check in time
+    self.rental.refresh_from_db()
+    self.assertNotEqual(self.rental.checkinTime, None)
 
+
+
+  def test_billing_greater_than_minimum_charge(self):
+
+    self.client.login(username='testuser', password='12345')
+    form_data = {'rental_id': self.rental.id, 'checkin_location': 'Location1'}
+    #Setting up checkout for the time difference - currently at 30 minutes
+    self.rental.checkoutTime=timezone.now() - timezone.timedelta(minutes=30)  
+    time_difference = 30
+    self.rental.save()
+    self.client.post(reverse('check_in'), form_data, follow=True)
+    
+    #check if the balance is updated correctly
+    self.account.refresh_from_db()
+    self.assertEqual(self.account.outstandingBalance,
+                     time_difference * self.rental.vehicle.costPerMinute)
+
+  def test_billing_less_than_minimum_charge(self):
+
+    self.client.login(username='testuser', password='12345')
+    form_data = {'rental_id': self.rental.id, 'checkin_location': 'Location1'}
+    #Setting up checkout for the time difference - currently at 30 minutes
+    self.rental.checkoutTime=timezone.now() - timezone.timedelta(minutes=3)  
+    self.rental.save()
+    self.client.post(reverse('check_in'), form_data, follow=True)
+  
+    #check if the balance is updated correctly
+    self.account.refresh_from_db()
+    self.assertEqual(self.account.outstandingBalance, self.vehicle.minimumCharge)
+    
 # end of TestCheckInView
+
 
 # test the check in form view
 class TestCheckInForm(TestCase):
@@ -367,5 +409,6 @@ class TestVehicleRentalModel(TestCase):
 
     rentals = VehicleRental.objects.all()
     self.assertEqual(list(rentals), [self.rental, rental2, rental3])
-  
+
 # end of TestVehicleRentalModel
+
