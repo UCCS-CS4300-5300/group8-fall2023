@@ -4,6 +4,8 @@ from RideShare.modelsFolder.VehicleModel import Vehicle
 from RideShare.modelsFolder.VehicleModel import VehicleRental
 from RideShare.forms import CheckInForm, CheckOutForm
 from django.utils import timezone
+import decimal
+from RideShareAccounts.models import Account
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -108,6 +110,7 @@ class CheckInView(View):
       
       # Update the availability of the vehicle
       vehicle_id = VehicleRental.objects.get(id=rental_id).vehicle.id
+      account = Account.objects.get(user=request.user)
       vehicle = Vehicle.objects.get(pk=vehicle_id)
       vehicle.isAvailable = True
       vehicle.save()
@@ -115,9 +118,22 @@ class CheckInView(View):
       rental = VehicleRental.objects.get(pk=rental_id)
 
       rental.checkin_location = checkin_location
-      rental.checkin_time = timezone.now()
-      rental.delete()
-      #rental.save()
+      rental.checkinTime = timezone.now()
+      rental.save()
+  
+
+      #calculate the time in minutes flooring to the last full minute
+      timeDiff = rental.checkinTime - rental.checkoutTime
+      rentalCost = (timeDiff.total_seconds() // 60)
+      rentalCost = decimal.Decimal(rentalCost) * rental.vehicle.costPerMinute
+      #make sure that minimumCharge is made
+      if rentalCost < rental.vehicle.minimumCharge:
+        rentalCost = rental.vehicle.minimumCharge
+      
+      account.outstandingBalance += rentalCost
+      account.save()
+
+      
       redirectView = 'check_in'
 
       return redirect(redirectView)
@@ -134,7 +150,6 @@ class CheckInView(View):
     print("form errors: ", form.errors)
     print("Redirecting to 'vehicle_map' failed. Form is not valid or rental is not found.")
     return render(request, self.template_name, context)
-
 
 
   
