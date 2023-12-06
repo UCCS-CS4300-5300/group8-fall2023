@@ -4,9 +4,14 @@ from django.shortcuts import render, redirect
 
 from RideShareAccounts.forms import SignUpForm, AccountForm, ChangePasswordForm
 from RideShareAccounts.models import Account, PaymentMethod
+from RideShareBilling.models import Payment
 
 
 def signuppage(request):
+    """
+    This handles the sign up form.  It created a default user and relates it to the additional fields we need for an account.
+    """
+
     if request.user.is_authenticated:
         return redirect('/')
 
@@ -29,6 +34,10 @@ def signuppage(request):
 
 
 def signinpage(request):
+    """
+    This is the view for the simple sign in page.
+    """
+
     if request.user.is_authenticated:
         return redirect('/')
 
@@ -50,11 +59,19 @@ def signinpage(request):
 
 
 def logoutpage(request):
+    """
+    This view just logs a user out and sends them to the sign in page.
+    """
+
     logout(request)
     return redirect('/signin')
 
 
 def accountpage(request):
+    """
+    This view has a lot going on.  It allows users to change account info, change password, pay a bill and see history.
+    """
+
     if not request.user.is_authenticated:
         return redirect('/signin')
 
@@ -72,15 +89,20 @@ def accountpage(request):
 
     form = AccountForm()
     paymentMethods = PaymentMethod.objects.all()
+    userPayments = Payment.objects.filter(user=request.user)
     account = Account.objects.get(user=request.user)
     return render(request, 'account.html',
                   {'form': form, 'user': request.user,
                    'defaultPaymentMethodId': account.defaultPaymentMethod_id,
                    'outstandingBalance': account.outstandingBalance,
-                   'paymentMethods': paymentMethods})
+                   'paymentMethods': paymentMethods, 'userPayments': userPayments})
 
 
 def changepasswordpage(request):
+    """
+    This view allows a user to change their password.
+    """
+
     if request.method == 'POST':
         form = ChangePasswordForm(request.user, request.POST)
         if form.is_valid():

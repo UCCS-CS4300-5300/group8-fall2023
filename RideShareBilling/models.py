@@ -10,6 +10,10 @@ class PaymentMethod(models.Model):
 
 
 class Payment(models.Model):
+    """
+    This form extends the Default user creation form.  It adds in default payment method in the template
+    """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     paymentMethod = models.ForeignKey(PaymentMethod, on_delete=models.DO_NOTHING)
     amountPaid = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
